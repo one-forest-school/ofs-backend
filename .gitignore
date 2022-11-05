@@ -36,3 +36,6 @@ lerna-debug.log*
 
 # Enviroment Variables
 .env.development
+
+# Unwanted files
+new_user_credentials.csv

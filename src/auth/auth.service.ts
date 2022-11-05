@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import {
   AuthenticationDetails,
   CognitoUser,
-  CognitoUserPool,
+  CognitoUserPool
 } from 'amazon-cognito-identity-js';
 
 @Injectable()
@@ -41,6 +41,7 @@ export class AuthService {
         onFailure: err => {
           reject(err);
         },
+        
       });
     });
   }
