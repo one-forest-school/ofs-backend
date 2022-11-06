@@ -1,4 +1,4 @@
-interface AuthenticateUser {
-    email: string,
-    password: string
+export interface AuthenticateUser {
+  email: string;
+  password: string;
 }

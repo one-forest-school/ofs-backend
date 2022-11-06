@@ -6,15 +6,14 @@ import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env.development']
+      envFilePath: ['.env.development'],
     }),
     HealthModule,
-    AuthModule
-],
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

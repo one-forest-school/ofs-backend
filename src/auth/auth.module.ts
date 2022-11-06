@@ -4,10 +4,9 @@ import { AuthController } from './auth.controller';
 import { ConfigModule } from '@nestjs/config';
 import authConfig from './auth.config';
 
-
 @Module({
   imports: [ConfigModule.forFeature(authConfig)],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService],
 })
 export class AuthModule {}

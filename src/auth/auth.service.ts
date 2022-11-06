@@ -3,16 +3,15 @@ import { ConfigService } from '@nestjs/config';
 import {
   AuthenticationDetails,
   CognitoUser,
-  CognitoUserPool
+  CognitoUserPool,
 } from 'amazon-cognito-identity-js';
+import { AuthenticateUser } from './auth.interface';
 
 @Injectable()
 export class AuthService {
-    
   private userPool: CognitoUserPool;
 
   constructor(private configService: ConfigService) {
-
     this.userPool = new CognitoUserPool({
       UserPoolId: this.configService.get('auth.userPoolId'),
       ClientId: this.configService.get('auth.clientId'),
@@ -35,13 +34,12 @@ export class AuthService {
 
     return new Promise((resolve, reject) => {
       return newUser.authenticateUser(authenticationDetails, {
-        onSuccess: result => {
+        onSuccess: (result) => {
           resolve(result);
         },
-        onFailure: err => {
+        onFailure: (err) => {
           reject(err);
         },
-        
       });
     });
   }
