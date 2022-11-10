@@ -1,5 +1,6 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
-import { AuthenticateUser } from './auth.interface';
+import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
+import { CognitoAccessToken } from 'amazon-cognito-identity-js';
+import { AuthenticateUser, SignUpUser, ConfirmationOTP, ResendConfirmation } from './auth.interface';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -12,6 +13,36 @@ export class AuthController {
       return await this.authService.authenticateUser(authenticateRequest);
     } catch (e) {
       throw new BadRequestException(e.message);
+    }
+  }
+
+  @Post('signup')
+  async signup(@Body() signupRequest: SignUpUser){
+    console.log("request received")
+    try{
+      return await this.authService.signUpUser(signupRequest)
+    } catch (e) {
+      throw new BadRequestException(e.message)
+    }
+  }
+  
+  @Get('confirmation')
+  async confirmation(@Body() confirmationOTP: ConfirmationOTP){
+    console.log("request received")
+    try{
+      return this.authService.confirmUser(confirmationOTP)
+    } catch (e){
+      throw new BadRequestException(e.message)
+    }
+  }
+
+  @Get('resendconfirmation')
+  async resendconfirmation(@Body() confirmationOTP: ResendConfirmation){
+    console.log("request received")
+    try{
+      return this.authService.resendConfirmation(confirmationOTP)
+    } catch (e){
+      throw new BadRequestException(e.message)
     }
   }
 }
