@@ -3,18 +3,18 @@ export interface AuthenticateUser {
   password: string;
 }
 
-export interface SignUpUser{
+export interface SignUpUser {
   name: string;
   email: string;
   password: string;
   phone: string;
 }
 
-export interface ConfirmationOTP{
+export interface ConfirmationOTP {
   username: string;
   otp: string;
 }
 
-export interface ResendConfirmation{
+export interface ResendConfirmation {
   email: string;
 }
