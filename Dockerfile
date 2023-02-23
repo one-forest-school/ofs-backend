@@ -13,7 +13,7 @@ WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
 COPY --chown=node:node yarn.lock ./
 COPY --chown=node:node tscofig*.json ./
-COPY --chown=node:node .env.development ./
+COPY --chown=node:node .env ./
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN yarn install --immutable --immutable-cache
@@ -35,7 +35,7 @@ WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
 COPY --chown=node:node yarn.lock ./
 COPY --chown=node:node tscofig*.json ./
-COPY --chown=node:node .env.development ./
+COPY --chown=node:node .env ./
 
 # In order to run `npm run build` we need access to the Nest CLI which is a dev dependency. In the previous development stage we ran `npm ci` which installed all dependencies, so we can copy over the node_modules directory from the development image
 COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
