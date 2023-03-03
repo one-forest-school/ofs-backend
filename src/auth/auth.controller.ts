@@ -7,15 +7,15 @@ import {
 } from '@nestjs/common';
 import {
   AuthenticateUser,
-  SignUpUser,
   ConfirmationOTP,
   ResendConfirmation,
 } from './auth.interface';
-import { AuthService } from './auth.service';
+import { RegisterAuthDto } from './dto/register-auth.dto';
+import { CognitoService } from './service/cognito.service';
 
-@Controller('auth')
+@Controller('api/v1/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: CognitoService) {}
 
   @Post('login')
   async login(@Body() authenticateRequest: AuthenticateUser) {
@@ -26,10 +26,10 @@ export class AuthController {
     }
   }
 
-  @Post('signup')
-  async signup(@Body() signupRequest: SignUpUser) {
+  @Post('register')
+  async signup(@Body() signupRequest: RegisterAuthDto) {
     try {
-      return this.authService.signUpUser(signupRequest);
+      return await this.authService.registerUser(signupRequest);
     } catch (e) {
       throw new BadRequestException(e.message);
     }

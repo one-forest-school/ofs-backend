@@ -39,3 +39,4 @@ lerna-debug.log*
 
 # Unwanted files
 new_user_credentials.csv
+.vercel

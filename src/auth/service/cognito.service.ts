@@ -6,15 +6,12 @@ import {
   CognitoUserPool,
   CognitoUserAttribute,
 } from 'amazon-cognito-identity-js';
-import {
-  AuthenticateUser,
-  SignUpUser,
-  ConfirmationOTP,
-  ResendConfirmation,
-} from './auth.interface';
+import { ConfirmationOTP, ResendConfirmation } from '../auth.interface';
+import { LoginAuthDto } from '../dto/login-auth.dto';
+import { RegisterAuthDto } from '../dto/register-auth.dto';
 
 @Injectable()
-export class AuthService {
+export class CognitoService {
   private userPool: CognitoUserPool;
 
   constructor(private configService: ConfigService) {
@@ -24,25 +21,33 @@ export class AuthService {
     });
   }
 
-  authenticateUser(user: AuthenticateUser) {
+  /**
+   * Login of User
+   * @param user
+   * @returns Promise<unknown>
+   */
+  authenticateUser(user: LoginAuthDto) {
     const { email, password } = user;
 
     const authenticationDetails = new AuthenticationDetails({
       Username: email,
       Password: password,
     });
+
     const userData = {
       Username: email,
       Pool: this.userPool,
     };
 
     const newUser = new CognitoUser(userData);
-    console.log(this.configService.get('auth.userPoolId'));
-    console.log(email, password);
+
     return new Promise((resolve, reject) => {
-      return newUser.authenticateUser(authenticationDetails, {
+      newUser.authenticateUser(authenticationDetails, {
         onSuccess: (result) => {
-          resolve(result);
+          resolve({
+            accessToken: result.getAccessToken().getJwtToken(),
+            refreshToken: result.getRefreshToken().getToken(),
+          });
         },
         onFailure: (err) => {
           reject(err);
@@ -51,10 +56,10 @@ export class AuthService {
     });
   }
 
-  signUpUser(user: SignUpUser) {
-    const { name, email, password, phone } = user;
-    console.log('inside signup user');
-    console.log(name, email, password, phone);
+  registerUser(user: RegisterAuthDto) {
+    const { name, email, password, mobile } = user;
+
+    console.log(name, email, password, mobile);
     const attributeList = [];
     const dataEmail = {
       Name: 'email',
@@ -62,27 +67,29 @@ export class AuthService {
     };
     const dataPhoneNumber = {
       Name: 'phone_number',
-      Value: phone,
+      Value: mobile,
     };
     const attributeEmail = new CognitoUserAttribute(dataEmail);
     const attributePhoneNumber = new CognitoUserAttribute(dataPhoneNumber);
     attributeList.push(attributeEmail);
     attributeList.push(attributePhoneNumber);
-    this.userPool.signUp(
-      email,
-      password,
-      attributeList,
-      null,
-      function (err, result) {
-        if (err) {
-          console.log('inside error');
-          console.log(err.message);
-          return;
-        }
-        const cognitoUser = result.user;
-        console.log('user name is ' + cognitoUser.getUsername());
-      },
-    );
+    return new Promise((resolve, reject) => {
+      this.userPool.signUp(
+        email,
+        password,
+        attributeList,
+        null,
+        function (err, result) {
+          if (!result) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+          const cognitoUser = result.user;
+          console.log('user name is ' + cognitoUser.getUsername());
+        },
+      );
+    });
   }
 
   confirmUser(confirmationotp: ConfirmationOTP) {
